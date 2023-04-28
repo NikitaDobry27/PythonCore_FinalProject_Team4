@@ -1,0 +1,38 @@
+from command_handlers import function
+from addressbook import AddressBook
+
+
+def command_parser(addressbook: AddressBook, input_string) -> str:  # TODO (optional) remake parser with argparse
+    input_string = input_string.strip().lstrip()
+    command = input_string.split()[0].lower()
+    arguments = input_string.split()[1:]
+    if command in function:
+        message = function[command](addressbook, *arguments)
+    elif input_string.lower() in ('good bye', 'exit', 'close'):
+        message = 'Good bye!'
+    else:
+        message = f'Command {command} does not exist!'  # TODO (optional) implement wrong command helper
+    return message
+
+
+def main() -> None:
+    print('Type "help" for list of commands.')
+    my_address_book = AddressBook()
+    my_address_book.read_records_from_file('storage1.dat')
+    while True:
+        input_string = input('Enter Command: ')
+        if not len(input_string):
+            continue
+        message = command_parser(my_address_book, input_string)
+        print(message)
+        if message == 'Good bye!':
+            my_address_book.save_records_to_file('storage1.dat')
+            break
+
+
+if __name__ == '__main__':
+    main()
+    # TODO (optional) implement logger instance
+    # TODO (optional) tkinter or PyQt interface
+    # TODO (optional) implement localization
+    # TODO (optional) async decorator and Telegram bot application
