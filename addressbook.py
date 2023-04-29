@@ -21,6 +21,9 @@ class _Name(_Field):
     def name(self, value):
         if not value:
             raise ValueError("Name can not be empty!")
+        
+        if not re.compile(r'^[a-zA-Zа-щА-ЩЬьЮюЯяЇїІіЄєҐґ]{2,25}$').match(value):
+            raise ValueError("Name is not valid. It should contain only letters (Latin or Ukrainian) and be no longer than 25 characters.")
         self._name = value        
 
 
@@ -34,17 +37,9 @@ class _Phone(_Field):
         
     @phone.setter
     def phone(self, value):
-        if not self.is_valid(value):
+        if not re.compile(r'^\+(?:\d[\s-]?){9,14}\d$|\d{9,10}$').match(value):
             raise ValueError("Phone number is not valid!")
         self._phone = value
-
-    def is_valid(self, value):
-        """
-        Examples of acceptable phone number values: +380955555555, 0955555555, 575555555, +44-20-7123-4567
-        Examples of unacceptable phone number values: +380955552252525, 093321247124612654, 039245, +3809427
-        """
-        pattern = re.compile(r'^\+(?:\d[\s-]?){9,14}\d$|\d{9,10}$')
-        return bool(pattern.match(value))
 
 
 class _Email(_Field):
@@ -57,17 +52,10 @@ class _Email(_Field):
     
     @email.setter
     def email(self, value):
-        if not self.is_valid(value):
+        
+        if not re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').match(value):
             raise ValueError("Provided email is not valid")
         self._email = value
-
-    def is_valid(self, value):
-        """
-        Pattern will match: 123@test.com, j@n.com, 231@em.co.ua, 231@em.com.ua
-        Pattern will not match: 123.com, 123@com, 123@23.com, 1.1.1.1@gnisah.com, ыри@оы,con
-        """
-        pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-        return bool(pattern.match(value))
 
 class _Birthday(_Field):
     def __init__(self, birthday):
@@ -79,29 +67,19 @@ class _Birthday(_Field):
     
     @birthday.setter
     def birthday(self, value):
-        if not self.is_valid(value):
-            return ValueError("Birthday is not valid. Acceptable format: yyyy-m-d. Don't use dates in future")
-        self._birthday = value
-
-    def is_valid(self, value):
         try:
             birthday_date = datetime.strptime(value, "%Y-%m-%d")
             current_date = datetime.now()
 
             if birthday_date > current_date:
-                return False
+                raise ValueError("Birthday is not valid. Don't use dates in the future")
             
-            return True
+            self._birthday = value
         except ValueError:
-            return False
+            raise ValueError("Birthday is not valid. Acceptable format: yyyy-m-d")
 
 class _Record(_Field):
-    def __init__(self, name, phone=None, email=None, birthday=None):
-        self.name = _Name(name)
-        self.phone = _Phone(phone)
-        self.email = _Email(email) if email is not None else None
-        self.birthday = _Birthday(birthday) if birthday is not None else None
-
+    pass
 
 class AddressBook(UserDict):
     ...
@@ -114,5 +92,6 @@ class AddressBook(UserDict):
         return results
 
     ...
+
 if __name__ == '__main__':
     ...
