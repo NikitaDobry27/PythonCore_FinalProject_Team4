@@ -96,7 +96,11 @@ class _Birthday(_Field):
             return False
 
 class _Record(_Field):
-    raise NotImplementedError
+    def __init__(self, name, phone=None, email=None, birthday=None):
+        self.name = _Name(name)
+        self.phone = _Phone(phone)
+        self.email = _Email(email) if email is not None else None
+        self.birthday = _Birthday(birthday) if birthday is not None else None
 
 
 class AddressBook(UserDict):
