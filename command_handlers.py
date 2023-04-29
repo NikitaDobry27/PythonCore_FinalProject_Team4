@@ -53,8 +53,17 @@ def birthday_handler(addressbook: AddressBook, *args):
 
 @input_error
 def search_handler(addressbook: AddressBook, *args):
-    raise NotImplementedError
+    query = " ".join(args)
+    results = addressbook.search(query)
 
+    if not results:
+        return "No results found"
+
+    response = ""
+    for record in results:
+        response += f"{str(record.name).capitalize()}: {record.phone}\n"
+
+    return response
 
 def save_data(addressbook: AddressBook, *args) -> str:
     raise NotImplementedError
