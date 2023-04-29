@@ -100,8 +100,15 @@ class _Record(_Field):
 
 
 class AddressBook(UserDict):
-    raise NotImplementedError
+    ...
 
+    def search(self, query):
+        results = []
+        for record in self.data.values():
+            if query.lower() in record.name.lower() or query in record.phone:
+                results.append(record)
+        return results
 
+    ...
 if __name__ == '__main__':
     ...
