@@ -33,12 +33,31 @@ class _Birthday(_Field):
 
 class _Record(_Field):
     phones = []
+
     def __init__(self, name, phone):
         self.name = name
         self.phone = []
         if phone:
             self.phones.append(phone)
 
+    def name_name(self):
+        self.value = Name
+
+    def phone_phone(self):
+        self.value = Phone
+
+    def add_phone(self, phone):
+        if not phone in self.phones:
+            self.phones.append(phone)
+
+    def chenge_phone(self, phone, ph):
+        if phone in self.phones:
+            ind = self.phones.index(phone)
+            self.phones[ind] = ph
+
+    def remove_phone(self, phone):
+        if phone in self.phones:
+            self.phones.remove(phone)
     def name_name(self):
         self.value = Name
 
