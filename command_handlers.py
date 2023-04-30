@@ -1,5 +1,6 @@
 from addressbook import AddressBook
 from notebook import NoteBook
+from file_sorter import file_sorter
 
 
 def input_error(func):
@@ -48,7 +49,6 @@ del:
 @input_error
 def add_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'record':
-        addressbook.add_record(args[1])
         message = f'New record with name {args[1]} added to addressbook.'
     elif args[0] == 'phone':
         addressbook[args[1]].add_phone(args[2])
@@ -127,8 +127,9 @@ def load_data(addressbook: AddressBook, *args) -> str:
     raise NotImplementedError
 
 
-def sort_files(addressbook: AddressBook, *args):
-    raise NotImplementedError
+@input_error
+def sort_files(addressbook: AddressBook, *args) -> str:
+    message = file_sorter(args[0])
 
 
 def notes(addressbook: AddressBook, *args):

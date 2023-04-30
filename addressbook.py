@@ -30,7 +30,7 @@ class _Name(_Field):
 
     @value.setter
     def value(self, value) -> None:
-        name_value_pattern = r'^[A-Za-zА-Яа-я їЇєЄ]{2,25}$'
+        name_value_pattern = r'^[A-Za-zА-Яа-яїЇєЄ]{2,25}$'
         if re.match(name_value_pattern, value):
             self._value = value
         else:
