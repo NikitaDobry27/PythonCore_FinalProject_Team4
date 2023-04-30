@@ -24,17 +24,32 @@ def welcome_message(*args) -> str:
 
 
 def help_message(*args) -> str:
-    raise NotImplementedError
+    message = "help message"
+    return message
 
 
 @input_error
 def add_handler(addressbook: AddressBook, *args) -> str:
-    raise NotImplementedError
+    if args[0] == 'record':
+        addressbook.add_record(' '.join(args[1]))
+        message = f'New record with name {args[1]} added to addressbook.'
+    elif args[0] == 'phone':
+        addressbook[args[1]].add_phone(args[2])
+        message = f'Phone {args[2]} added to {args[1]} record.'
+    elif args[0] == 'email':
+        addressbook[args[1]].set_email(args[2])
+        message = f'Email {args[2]} added to {args[1]} record.'
+    elif args[0] == 'birthday':
+        addressbook[args[1]].set_birthday(args[2])
+        message = f'Birthday {args[2]} added to {args[1]} record.'
+    else:
+        message = f'add does not support {args[0]} command.'
+    return message
 
 
 @input_error
 def show_handler(addressbook: AddressBook, *args) -> str:
-    raise NotImplementedError
+    addressbook.show_records()
 
 
 @input_error
@@ -74,8 +89,9 @@ def load_data(addressbook: AddressBook, *args) -> str:
     raise NotImplementedError
 
 
-def sort_files(addressbook: AddressBook, *args):
-    raise NotImplementedError
+@input_error
+def sort_files(addressbook: AddressBook, *args) -> str:
+    message = file_sorter(args[0])
 
 
 def notes(addressbook: AddressBook, *args):
