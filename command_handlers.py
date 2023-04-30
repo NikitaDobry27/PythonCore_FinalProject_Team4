@@ -136,6 +136,12 @@ def notes(addressbook: AddressBook, *args):
     raise NotImplementedError
 
 
+def list_contacts_with_days_to_birthday(data):  # в "data" отримуємо str кількість днів до дня народження 
+    if len(contacts.contacts_with_days_to_bday(data)) == 0:
+        return f"No contacts will have birthday in {data} days"
+    return f'The following contacts will have days in {data} days: \n{contacts.contacts_with_days_to_bday(data)}'
+
+
 function = {'hello': welcome_message,
             'help': help_message,
             'add': add_handler,
