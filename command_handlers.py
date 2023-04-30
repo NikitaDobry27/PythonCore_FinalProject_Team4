@@ -141,7 +141,7 @@ def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
     birthdays = addressbook.contacts_with_days_to_bday(args[0])
     if len(birthdays) == 0:
         return f"No contacts will have birthday in {args[0]} days"
-    return f'The following contacts will have days in {args[0]} days: \n{birthdays}'
+    return f'The following contacts will have birthday in {args[0]} days: \n{birthdays}'
 
 
 function = {'hello': welcome_message,
