@@ -1,6 +1,6 @@
-from collections import UserDict
-import argparse
+import re
 import datetime
+from collections import UserDict
 
 
 class _HashTag:
@@ -12,25 +12,97 @@ class _HashTag:
 
 
 class _Note:
-    def __init__(self, note_title: str, note, tags: list[_HashTag] = None):
+    def __init__(self, note_title: str, note_text: str, tags: list[_HashTag] = None):
         self.note_title = note_title
-        self.note = note
+        self.note_text = note_text
         self.tags = tags
 
+    def set_new_tag(self, tag: _HashTag | list[_HashTag]):
+        self.tags.extend(tag) if type(tag) == list else self.tags.append(tag)
+
     def __str__(self):
+        tags_str = "#" + " #".join(str(tag) for tag in self.tags)
         res = ["_" * 100
-               + "\n"f"Note '{self.note_title}':\n\n{self.note}\n{''.join(f'#{tag}' for tag in self.tags)}\n"
+               + f"\nNote '{self.note_title}':\n\n{self.note_text}\n{tags_str}\n"
                + "_" * 100
                + "\n"]
         return "\n".join(res)
 
 
 class NoteBook(UserDict):
+
+    def create_note(self):
+        note_title = input("Enter note title: ")
+        # Если заметка с таким же заголовком уже существует, то к названию плюсуеться текущее дата и время
+        if note_title in notebook.keys():
+            note_title += f" {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+
+        note_content = input("Enter note text: ")
+        tags_str = input("Enter tags (space separated): ").strip()
+        tags_list = tags_str.split()
+        tags = [_HashTag(tag.strip()) for tag in tags_list]
+        new_note = _Note(note_title, note_content, tags)
+        self.add_note(new_note)
+
+        print(f"Note '{note_title}' created successfully!")
+        return ""
+
     def add_note(self, note: _Note):
-        if note.note_title in self.data.keys():
-            return "Notebook already contain the note with the same title."
+        self.data[note.note_title] = note
+
+    def ask_note(self):
+        print("Choose the note you want to work with.")
+        titles = []
+        for i, title in enumerate(self.data.keys(), 1):
+            titles.append(title)
+            print(f"{i}. {title}")
+        while True:
+            try:
+                pos_input = input("Enter positional number of the note or 'exit':\n")
+                if pos_input.lower() == "exit":
+                    return "exiting..."
+                title_pos = int(pos_input) - 1
+                if title_pos > len(self.data.keys()) or title_pos < 0:
+                    raise IndexError
+            except IndexError:
+                print("Wrong position. Please try again.")
+                continue
+            except ValueError:
+                print("Please enter a valid integer index.")
+                continue
+            return titles[title_pos]
+
+    def change_note(self):
+        note_title = self.ask_note()
+        note = self.data[note_title].note
+        ch_note = input(f"Your old note:\n{note}\nYou can do a few changes by copy/paste old note, or create new one\n")
+        self.data[note_title].note = ch_note
+        print("DONE")
+        return ""
+
+    def del_note(self):
+        note_title = self.ask_note()
+        self.data.pop(note_title)
+        print(f"Note '{note_title}' was successfully deleted.")
+        return ""
+
+    def show_notes(self):
+        for note in self.data.values():
+            print(note)
+            return ""
+
+    def search_note(self):
+        query = input("Enter search query: ")
+        results = []
+        for note in self.data.values():
+            if re.search(query, note.note_title, re.IGNORECASE) or re.search(query, note.note_text, re.IGNORECASE):
+                results.append(note)
+        if results:
+            for note in results:
+                print(f"Was found {len(results)} note(s):\n{note}")
         else:
-            self.data[note.note_title] = note
+            print("No notes found.")
+        return ""
 
     def __str__(self):
         return "\n".join(str(n) for n in self.data.values())
@@ -38,51 +110,8 @@ class NoteBook(UserDict):
 
 notebook = NoteBook()
 
-
-def create_note(*args):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("note_title", nargs="?", help="Note Title")
-    parser.add_argument("note_text", nargs="*", help="Text of the note")
-    parser.add_argument("-t", "--tags", nargs="*", help="Tags for note")
-    args = parser.parse_args(args)
-    note_title = args.note_title
-    if note_title in notebook.keys():
-        note_title += f" {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-    tags = [_HashTag(tag) for tag in args.tags] if args.tags else []
-    note = _Note(note_title, " ".join(args.note_text), tags)
-    notebook.add_note(note)
-
-
-def show(*args):
-    for note in notebook.values():
-        print(note)
-    return ""
-
-
-COMMANDS = {create_note: "create", show: "show"}
-
-
-def command_handler(user_input: str):
-    for command, command_words in COMMANDS.items():
-        if user_input.lower().startswith(command_words):
-            return command, user_input[len(command_words):].strip().split(" ")
-    return None, None
-
-
-def main():
-    while True:
-        user_input = input("Enter command:\n")
-        command, data = command_handler(user_input)
-        print(data)
-        if command:
-            print(command(*data))
-        elif any(
-            word in user_input.lower()
-            for word in ["exit", "close", "good bye", "goodbye"]
-        ):
-            print("Good bye!")
-            break
-
-
 if __name__ == "__main__":
-    main()
+    notebook.create_note()
+    notebook.create_note()
+    notebook.show_notes()
+    notebook.search_note()
