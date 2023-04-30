@@ -2,11 +2,11 @@ from pathlib import Path
 import os
 
 CATEGORIES = {
-'images': ['.jpeg', '.png', '.jpg', '.svg'],
-'documents': ['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx'],
-'audio': ['.mp3', '.ogg', '.wav', '.amr'],
-'video': ['.avi', '.mp4', '.mov', '.mkv'],
-'archives': ['.zip', '.gz', '.tar']
+    'images': ['.jpeg', '.png', '.jpg', '.svg'],
+    'documents': ['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx'],
+    'audio': ['.mp3', '.ogg', '.wav', '.amr'],
+    'video': ['.avi', '.mp4', '.mov', '.mkv'],
+    'archives': ['.zip', '.gz', '.tar']
 }
 
 
@@ -16,6 +16,7 @@ def get_categories(file: Path):
         if extension in extensions:
             return category
     return None
+
 
 def file_sorter(path_str: str):
     path = Path(path_str)
@@ -33,7 +34,7 @@ def file_sorter(path_str: str):
         file.rename(dst_file)
     return f'files have been sorted'
 
-if __name__ == '__main__':
-    path_str = 'C:\\Users\\Surface\\Downloads'
-    print(file_sorter(path_str))
 
+if __name__ == '__main__':
+    path1 = 'C:\\Users\\Surface\\Downloads'
+    print(file_sorter(path1))
