@@ -90,7 +90,7 @@ class NoteBook(UserDict):
         for note in self.data.values():
             print(note)
             return ""
-
+    #Поиск
     def search_note(self):
         query = input("Enter search query: ")
         results = []
