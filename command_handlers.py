@@ -49,6 +49,7 @@ del:
 @input_error
 def add_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'record':
+        addressbook.add_record(args[1])
         message = f'New record with name {args[1]} added to addressbook.'
     elif args[0] == 'phone':
         addressbook[args[1]].add_phone(args[2])
@@ -136,10 +137,11 @@ def notes(addressbook: AddressBook, *args):
     raise NotImplementedError
 
 
-def list_contacts_with_days_to_birthday(data):  # в "data" отримуємо str кількість днів до дня народження 
-    if len(contacts.contacts_with_days_to_bday(data)) == 0:
-        return f"No contacts will have birthday in {data} days"
-    return f'The following contacts will have days in {data} days: \n{contacts.contacts_with_days_to_bday(data)}'
+def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
+    birthdays = addressbook.contacts_with_days_to_bday(args[0])
+    if len(birthdays) == 0:
+        return f"No contacts will have birthday in {args[0]} days"
+    return f'The following contacts will have days in {args[0]} days: \n{birthdays}'
 
 
 function = {'hello': welcome_message,
@@ -151,4 +153,5 @@ function = {'hello': welcome_message,
             'search': search_handler,
             'save': save_data,
             'load': load_data,
-            'sort_files': sort_files}
+            'sort_files': sort_files,
+            'birthdays': list_contacts_with_days_to_birthday}
