@@ -44,6 +44,8 @@ del:
     birthday 'name' 'birthday'           : NOT IMPLEMENTED
 birthdays:
     number_of_days                       : show list of contacts with birthday on "number_of_days" after today
+days
+    'name'                               : show number of days till person's birthday
     """
     return message
 
@@ -146,6 +148,16 @@ def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
     return f'The following contacts will have birthday in {args[0]} days: \n{birthdays}'
 
 
+def days_to_bd(addressbook: AddressBook, data1):
+    name = addressbook[data1].name.value
+    rec = addressbook.get(str(name))
+    if not rec:
+        return f'No contact with name "{name}"'
+    if rec and (not rec.birthday):
+        return f'The contact "{name}" has no birthdate in records'
+    return rec.days_to_birthday()
+
+
 function = {'hello': welcome_message,
             'help': help_message,
             'add': add_handler,
@@ -156,4 +168,5 @@ function = {'hello': welcome_message,
             'save': save_data,
             'load': load_data,
             'sort_files': sort_files,
-            'birthdays': list_contacts_with_days_to_birthday}
+            'birthdays': list_contacts_with_days_to_birthday,
+            'days': days_to_bd}
