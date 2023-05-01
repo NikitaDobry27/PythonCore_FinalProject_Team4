@@ -2,6 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from datetime import date, datetime
 from collections import UserDict
+import pickle
 
 
 class _Field(ABC):
@@ -178,7 +179,18 @@ class AddressBook(UserDict):
             if delta.days == int(days):
                 result.append(f"{record.name}, {record.bday}")
         return "\n".join(result)
+    
+    def save_records_to_file(self, filename):
+        with open(filename, "wb") as fw:
+            pickle.dump(self.data, fw)
 
+    def read_records_from_file(self, filename):
+        try:
+            with open(filename, "rb") as fr:
+                content = pickle.load(fr)
+                self.data.update(content)
+        except FileNotFoundError:
+            pass
 
 if __name__ == '__main__':
     # Примеры работы с адресной книгой

@@ -121,11 +121,13 @@ def search_handler(addressbook: AddressBook, *args):
 
 
 def save_data(addressbook: AddressBook, *args) -> str:
-    raise NotImplementedError
+    addressbook.save_records_to_file('storage1.dat')
+    return "Records have been saved."
 
 
 def load_data(addressbook: AddressBook, *args) -> str:
-    raise NotImplementedError
+    addressbook.read_records_from_file('storage1.dat')
+    return "Records have been loaded."
 
 
 @input_error
