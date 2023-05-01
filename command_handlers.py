@@ -42,6 +42,8 @@ del:
     phone 'name' 'phone'                 : delete phone from record.
     email 'name' 'email'                 : NOT IMPLEMENTED
     birthday 'name' 'birthday'           : NOT IMPLEMENTED
+birthdays:
+    number_of_days                       : show list of contacts with birthday on "number_of_days" after today
     """
     return message
 
