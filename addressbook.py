@@ -150,6 +150,18 @@ class AddressBook(UserDict):
         else:
             raise KeyError('Record with this name already exists.')
 
+    def change_phone(self, old_phone, new_phone):
+        raise NotImplementedError
+
+    def del_email(self, email: str):
+        raise NotImplementedError
+
+    def del_phone(self, phone: str):
+        raise NotImplementedError
+
+    def del_birthday(self, birthday):
+        raise NotImplementedError
+
     def del_record(self, name: str):
         if name in self.data:
             self.data.pop(name)
