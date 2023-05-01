@@ -61,7 +61,10 @@ class Record(Name, Phone):
 
 
 class AddressBook(UserDict):
-    pass
+    def add_record(self, record):
+        self.data[record.name.value] = record
+        return self.data
+
 
 
 if __name__ == '__main__':
