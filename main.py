@@ -6,7 +6,6 @@ def command_parser(addressbook: AddressBook, input_string) -> str:
     input_string = input_string.strip().lstrip()
     command = input_string.split()[0].lower()
     arguments = input_string.split()[1:]
-    print(f'Command: {command}, Arguments: {arguments}')  # Debug message
     if command in function:
         message = function[command](addressbook, *arguments)
     elif input_string.lower() in ('good bye', 'exit', 'close'):

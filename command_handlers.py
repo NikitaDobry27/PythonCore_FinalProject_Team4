@@ -45,8 +45,8 @@ change:
 del: 
     record 'name'                        : delete record with specified name.
     phone 'name' 'phone'                 : delete phone from record.
-    email 'name' 'email'                 : NOT IMPLEMENTED
-    birthday 'name' 'birthday'           : NOT IMPLEMENTED
+    email 'name' 'email'                 : delete email from record.
+    birthday 'name' 'birthday'           : delete birthday from record.
     note                                 : delete the note from notebook completely.
     tags                                 : delete all tags from the note.
 
@@ -83,8 +83,7 @@ def add_handler(addressbook: AddressBook, *args) -> str:
 @input_error
 def change_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'phone':
-        addressbook[args[1]].del_phone(args[2])
-        addressbook[args[1]].add_phone(args[3])
+        addressbook[args[1]].change_phone(args[2], args[3])
         message = f'Phone in record {args[1]} was changed from {args[2]} to {args[3]} record.'
     elif args[0] == 'email':
         addressbook[args[1]].set_email(args[2])
@@ -112,9 +111,11 @@ def del_handler(addressbook: AddressBook, *args) -> str:
         addressbook[args[1]].del_phone(args[2])
         message = f'Phone {args[2]} was deleted from {args[1]} record.'
     elif args[0] == 'email':
-        raise NotImplementedError
+        addressbook[args[1]].del_email()
+        message = f'Email was deleted from {args[1]} record.'
     elif args[0] == 'birthday':
-        raise NotImplementedError
+        addressbook[args[1]].del_email()
+        message = f'Birthday was deleted from {args[1]} record.'
     elif args[0] == 'note':
         message = addressbook.notebook.del_note()
     elif args[0] == 'tags':

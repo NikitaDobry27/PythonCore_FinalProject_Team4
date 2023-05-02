@@ -75,6 +75,7 @@ class _Email(_Field):
     def __str__(self) -> str:
         return self._value
 
+
 class _Birthday(_Field):
     def __init__(self, value):
         super().__init__(value)
@@ -110,6 +111,14 @@ class _Record:
         else:
             raise ValueError(f"Phone {phone.value} already exists in {self.name.value} record")
 
+    def change_phone(self, old_phone: str, new_phone: str):
+        for phone in self.phones:
+            if phone.value == old_phone:
+                phone.value = new_phone
+                break
+        else:
+            raise KeyError(f'Phone {old_phone} is not found in record')
+
     def del_phone(self, phone: str):
         phone = _Phone(phone)
         if phone in self.phones:
@@ -121,9 +130,15 @@ class _Record:
         birthday = _Birthday(birthday)
         self.birthday = birthday
 
+    def del_birthday(self):
+        self.birthday = None
+
     def set_email(self, email: str):
         email = _Email(email)
         self.email = email
+
+    def del_email(self):
+        self.email = None
 
     def days_to_birthday(self) -> int | None:
         if not self.birthday:
@@ -155,41 +170,11 @@ class AddressBook(UserDict):
         else:
             raise KeyError('Record with this name already exists.')
 
-    def change_phone(self, old_phone, new_phone):
-        for record in self.data.values():
-            if old_phone in record.phones:
-                try:
-                    record.add_phone(new_phone)
-                    record.del_phone(old_phone)
-                except ValueError as e:
-                    print(str(e))
-                break
+    def del_record(self, name: str):
+        if name in self.data:
+            self.data.pop(name)
         else:
-            raise KeyError(f'Phone {old_phone} is not found in any record')
-
-    def del_email(self, email: str):
-        for record in self.data.values():
-            if record.email == email:
-                record.email = None
-                break
-        else:
-            raise KeyError(f'Email {email} is not found in any record')
-
-    def del_phone(self, phone: str):
-        for record in self.data.values():
-            if phone in record.phones:
-                record.del_phone(phone)
-                break
-        else:
-            raise KeyError(f'Phone {phone} is not found in any record')
-
-    def del_birthday(self, birthday):
-        for record in self.data.values():
-            if record.birthday and str(record.birthday) == str(birthday):
-                record.birthday = None
-                break
-        else:
-            raise KeyError(f'Birthday {birthday} is not found in any record')
+            raise KeyError(f'Record with name {name} does not exist')
 
     def show_records(self):
         for i in self.data.values():
@@ -234,6 +219,7 @@ class AddressBook(UserDict):
                 self.data.update(content)
         except FileNotFoundError:
             pass
+
 
 if __name__ == '__main__':
     # Примеры работы с адресной книгой
