@@ -8,8 +8,8 @@ class _HashTag:
         self.tag = tag
 
     def __str__(self):
+        # return f"\033[94m{'#'+ self.tag}\033[0m"
         return f"{self.tag}"
-
 
 class _Note:
     def __init__(self, note_title: str, note_text: str, tags: list[_HashTag] = None):
@@ -17,24 +17,14 @@ class _Note:
         self.note_text = note_text
         self.tags = tags
 
-    # def set_new_tag(self, tag: _HashTag | list[_HashTag]):
-    #     self.tags.extend(tag) if type(tag) == list else self.tags.append(tag)
-
     def __str__(self):
-        tags_str = " ".join('#' + str(tag) for tag in self.tags)
+        tags_str = " ".join(str(tag) for tag in self.tags)
         res = ["_" * 100
                + f"\n\033[1m{self.note_title.upper()}:\033[0m\n\n{self.note_text}"
-               + f"\n\033[94m{tags_str}\033[0m\n"
+               + f"\n\033[94m{'#'+tags_str}\033[0m\n"
                + "_" * 100
                + "\n"]
         return "\n".join(res)
-    # def __str__(self):
-    #     tags_str = " ".join('#'+str(tag) for tag in self.tags)
-    #     res = ["_" * 100
-    #            + f"\nNote '{self.note_title}':\n\n{self.note_text}\n{tags_str}\n"
-    #            + "_" * 100
-    #            + "\n"]
-    #     return "\n".join(res)
 
 
 class NoteBook(UserDict):
@@ -44,27 +34,27 @@ class NoteBook(UserDict):
         # Если заметка с таким же заголовком уже существует, то к названию плюсуеться текущее дата и время
         if note_title in self.data.keys():
             note_title += f" {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-
         note_content = input("Enter note text: ")
         tags_str = input("Enter tags (space separated): ").strip()
         tags_list = tags_str.split()
         tags = [_HashTag(tag.strip()) for tag in tags_list]
         new_note = _Note(note_title, note_content, tags)
         self.add_note(new_note)
-        print(f"Note '{note_title}' created successfully!")
+        message = f"Note '{note_title}' created successfully!"
+        return message
 
     def add_note(self, note: _Note):
         self.data[note.note_title] = note
 
     def ask_note(self):
-        print("Choose the note you want to work with.")
+        print("Choose the note you want to work with.\n")
         titles = []
         for i, title in enumerate(self.data.keys(), 1):
             titles.append(title)
             print(f"{i}. {title}")
         while True:
             try:
-                pos_input = input("Enter positional number of the note or 'exit'\n>>> ")
+                pos_input = input("\nEnter positional number of the note or 'exit'\n>>> ")
                 if pos_input.lower() == "exit":
                     return "exiting..."
                 title_pos = int(pos_input) - 1
@@ -85,7 +75,7 @@ class NoteBook(UserDict):
             f"Your old note:\n\n{note}\n\nYou can do a few changes by copy/paste old note, or create new one.\n>>> "
         )
         self.data[note_title].note_text = ch_note
-        return f'Note {note_title} was changed.'
+        return f"Note '{note_title}' was changed."
 
     def del_note(self):
         note_title = self.ask_note()
@@ -127,7 +117,7 @@ class NoteBook(UserDict):
         if self.data.values():
             note_title = self.ask_note()
             tags = self.data[note_title].tags
-            mes = f'This note has next tags: {" ".join("#" + str(tag) for tag in tags)}' if tags \
+            mes = f'This note has next tags: {" ".join("#"+str(tag) for tag in tags)}' if tags \
                 else "This note hasn't any tag yet."
             print(mes)
             new_tags_str = input("Enter new tag(s)\n>>> ")

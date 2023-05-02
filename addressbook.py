@@ -157,7 +157,7 @@ class _Record:
         str_phones = ' '.join(phone.value for phone in self.phones)
         str_email = self.email.value if self.email else str()
         str_birthday = str(self.birthday) if self.birthday else str()
-        return ' | '.join((self.name.value, str_email, str_phones, str_birthday))
+        return '|'.join((self.name.value, str_email, str_phones, str_birthday))
 
 
 class AddressBook(UserDict):
@@ -181,18 +181,17 @@ class AddressBook(UserDict):
             print(str(i))
 
     def search(self, query):
-        
-        results = []
+        results = ""
         for record in self.data.values():
-            if query.lower() in record.name.value.lower() or \
-               any(query in phone.value for phone in record.phones) or \
-               (record.birthday and query.lower() in str(record.birthday)) or \
-               (record.email and query.lower() in record.email.value.lower()):
+            if query.lower() in str(record):
                 str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
                 str_birthday = record.birthday if record.birthday else "No records"
                 str_email = record.email if record.email else "No records"
                 formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
-                results.append(formatted_record)
+                results += formatted_record
+        founded_notes = self.notebook.search_note(query)
+        formatted_notes = [str(note) for note in founded_notes]
+        results += "".join(formatted_notes)
         return results
 
     def contacts_with_days_to_bday(self, days):

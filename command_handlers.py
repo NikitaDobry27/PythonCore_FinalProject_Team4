@@ -1,5 +1,4 @@
 from addressbook import AddressBook
-# from notebook import NoteBook
 from file_sorter import file_sorter
 
 
@@ -70,10 +69,8 @@ def add_handler(addressbook: AddressBook, *args) -> str:
         addressbook[args[1]].set_birthday(args[2])
         message = f'Birthday {args[2]} added to {args[1]} record.'
     elif args[0] == 'note':
-        addressbook.notebook.create_note()
-        message = f'{len(addressbook.notebook.data.values())}'
+        message = addressbook.notebook.create_note()
     elif args[0] == 'tags':
-
         message = addressbook.notebook.set_tags()
     else:
         message = f'add does not support {args[0]} command.'
@@ -132,7 +129,10 @@ def show_handler(addressbook: AddressBook, *args) -> str:
         return 'All records are shown.'
     elif len(args) == 1 and args[0] == 'notes':
         mes = addressbook.notebook.show_notes()
+        if not mes:
+            return "There's no notes yet."
         return mes
+
     return "Something went wrong."
 
 
@@ -141,17 +141,8 @@ def search_handler(addressbook: AddressBook, *args):
     query = " ".join(args)
     results = addressbook.search(query)
     if not results:
-        res_notes = addressbook.notebook.search_note(query)
-        if res_notes:
-            print(f"{len(res_notes)} note(s) was found.")
-            response = "".join(str(note) for note in res_notes)
-            return response
-        else:
-            return "Nothing was found."
-    response = ""
-    for record in results:
-        response += f"{str(record.name.value).capitalize()}: {record.phones}\n"
-    return response
+        return "Nothing was found."
+    return results
 
 
 def find_tag(addressbook: AddressBook, *args):
