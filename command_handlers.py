@@ -1,5 +1,5 @@
 from addressbook import AddressBook
-from notebook import NoteBook
+# from notebook import NoteBook
 from file_sorter import file_sorter
 
 
@@ -33,15 +33,24 @@ add:
     phone 'name' 'phone'                 : add new phone to record.
     email 'name' 'email'                 : add email to record. Can be only one.
     birthday 'name' 'birthday'           : add birthday to record. Can be only one. Birthday format dd-mm-yyyy.
+    note                                 : add note to notebook.
+    tags                                 : add tag(s) to the note you'll choose from notebook.
 change: 
     phone 'name' 'old phone' 'new phone' : change old phone with new one.
     email 'name' 'email'                 : change email in record. 
     birthday 'name' 'birthday'           : change birthday in record. Birthday format dd-mm-yyyy.
+    note                                 : change the note text.
+    note title                           : change the note title.
+    tags                                 : change the tags for chosen note. 
 del: 
     record 'name'                        : delete record with specified name.
     phone 'name' 'phone'                 : delete phone from record.
     email 'name' 'email'                 : NOT IMPLEMENTED
     birthday 'name' 'birthday'           : NOT IMPLEMENTED
+    note                                 : delete the note from notebook completely.
+    tags                                 : delete all tags from the note.
+
+#:                                       : search by a tags (usage: # tag1 tag2...).
     """
     return message
 
@@ -60,6 +69,12 @@ def add_handler(addressbook: AddressBook, *args) -> str:
     elif args[0] == 'birthday':
         addressbook[args[1]].set_birthday(args[2])
         message = f'Birthday {args[2]} added to {args[1]} record.'
+    elif args[0] == 'note':
+        addressbook.notebook.create_note()
+        message = f'{len(addressbook.notebook.data.values())}'
+    elif args[0] == 'tags':
+
+        message = addressbook.notebook.set_tags()
     else:
         message = f'add does not support {args[0]} command.'
     return message
@@ -77,8 +92,14 @@ def change_handler(addressbook: AddressBook, *args) -> str:
     elif args[0] == 'birthday':
         addressbook[args[1]].set_birthday(args[2])
         message = f'Email in record {args[1]} was changed'
+    elif args[0] == 'note' and len(args) == 1:
+        message = addressbook.notebook.change_note()
+    elif args[0] == 'note' and args[1] == 'title':
+        message = addressbook.notebook.change_title()
+    elif args[0] == 'tags':
+        message = addressbook.notebook.change_tags()
     else:
-        message = f'change does not support {args[0]} command.'
+        message = f'change does not support {" ".join(args)} command.'
     return message
 
 
@@ -94,6 +115,10 @@ def del_handler(addressbook: AddressBook, *args) -> str:
         raise NotImplementedError
     elif args[0] == 'birthday':
         raise NotImplementedError
+    elif args[0] == 'note':
+        message = addressbook.notebook.del_note()
+    elif args[0] == 'tags':
+        message = addressbook.notebook.del_tags()
     else:
         message = f'del does not support {args[0]} command.'
     return message
@@ -101,22 +126,39 @@ def del_handler(addressbook: AddressBook, *args) -> str:
 
 @input_error
 def show_handler(addressbook: AddressBook, *args) -> str:
-    addressbook.show_records()
-    return 'All records are shown'
+    if len(args) < 1:
+        addressbook.show_records()
+        return 'All records are shown.'
+    elif len(args) == 1 and args[0] == 'notes':
+        mes = addressbook.notebook.show_notes()
+        return mes
+    return "Something went wrong."
 
 
 @input_error
 def search_handler(addressbook: AddressBook, *args):
     query = " ".join(args)
     results = addressbook.search(query)
-
     if not results:
-        return "No results found"
-
+        res_notes = addressbook.notebook.search_note(query)
+        if res_notes:
+            print(f"{len(res_notes)} note(s) was found.")
+            response = "".join(str(note) for note in res_notes)
+            return response
+        else:
+            return "Nothing was found."
     response = ""
     for record in results:
-        response += f"{str(record.name).capitalize()}: {record.phone}\n"
+        response += f"{str(record.name.value).capitalize()}: {record.phones}\n"
+    return response
 
+
+def find_tag(addressbook: AddressBook, *args):
+    result = addressbook.notebook.find_tag(args)
+    if not result:
+        return "No such tag(s)"
+    print(f"{len(result)} note(s) was found with {' '.join('#'+tag for tag in args)}")
+    response = "".join(str(note) for note in result)
     return response
 
 
@@ -156,4 +198,5 @@ function = {'hello': welcome_message,
             'save': save_data,
             'load': load_data,
             'sort_files': sort_files,
-            'birthdays': list_contacts_with_days_to_birthday}
+            'birthdays': list_contacts_with_days_to_birthday,
+            '#': find_tag}
