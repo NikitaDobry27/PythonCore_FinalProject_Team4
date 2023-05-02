@@ -161,9 +161,6 @@ def find_tag(addressbook: AddressBook, *args):
     return response
 
 
-
-
-
 def save_data(addressbook: AddressBook, *args) -> str:
     addressbook.save_records_to_file('storage1.dat')
     return "Records have been saved."

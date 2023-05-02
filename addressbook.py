@@ -72,6 +72,8 @@ class _Email(_Field):
             raise ValueError("Provided email is not valid")
         self._value = value
 
+    def __str__(self) -> str:
+        return self._value
 
 class _Birthday(_Field):
     def __init__(self, value):
@@ -140,7 +142,7 @@ class _Record:
         str_phones = ' '.join(phone.value for phone in self.phones)
         str_email = self.email.value if self.email else str()
         str_birthday = str(self.birthday) if self.birthday else str()
-        return '|'.join((self.name.value, str_email, str_phones, str_birthday))
+        return ' | '.join((self.name.value, str_email, str_phones, str_birthday))
 
 
 class AddressBook(UserDict):
@@ -161,13 +163,21 @@ class AddressBook(UserDict):
 
     def show_records(self):
         for i in self.data.values():
-            print(str(i))
+            print(str(i).capitalize())
 
     def search(self, query):
+        
         results = []
         for record in self.data.values():
-            if query.lower() in record.name.value.lower() or query in record.phones:
-                results.append(record)
+            if query.lower() in record.name.value.lower() or \
+               any(query in phone.value for phone in record.phones) or \
+               (record.birthday and query.lower() in str(record.birthday)) or \
+               (record.email and query.lower() in record.email.value.lower()):
+                str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
+                str_birthday = record.birthday if record.birthday else "No records"
+                str_email = record.email if record.email else "No records"
+                formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
+                results.append(formatted_record)
         return results
 
     def contacts_with_days_to_bday(self, days):
