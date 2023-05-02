@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import date, datetime
 from collections import UserDict
 import pickle
+from notebook import NoteBook
 
 
 class _Field(ABC):
@@ -145,6 +146,8 @@ class _Record:
 
 
 class AddressBook(UserDict):
+
+    notebook = NoteBook()
 
     def add_record(self, name: str):
         if name not in self.data:
