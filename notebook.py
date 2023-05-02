@@ -93,8 +93,10 @@ class NoteBook(UserDict):
         return f"Note '{note_title}' was successfully deleted."
 
     def show_notes(self):
+        res = ""
         for note in self.data.values():
-            print(str(note))
+            res += f"{note}\n"
+        return res
 
     # Поиск
     def search_note(self, query):

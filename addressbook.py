@@ -163,7 +163,7 @@ class AddressBook(UserDict):
 
     def show_records(self):
         for i in self.data.values():
-            print(str(i).capitalize())
+            print(str(i))
 
     def search(self, query):
         

@@ -126,12 +126,13 @@ def del_handler(addressbook: AddressBook, *args) -> str:
 
 @input_error
 def show_handler(addressbook: AddressBook, *args) -> str:
-    if args[0] == "notes":
-        addressbook.notebook.show_notes()
-        return 'All notes are shown.'
-    else:
+    if len(args) < 1:
         addressbook.show_records()
         return 'All records are shown.'
+    elif len(args) == 1 and args[0] == 'notes':
+        mes = addressbook.notebook.show_notes()
+        return mes
+    return "Something went wrong."
 
 
 @input_error
