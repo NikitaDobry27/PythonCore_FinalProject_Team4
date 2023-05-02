@@ -107,17 +107,14 @@ def show_handler(addressbook: AddressBook, *args) -> str:
 
 @input_error
 def search_handler(addressbook: AddressBook, *args):
-    query = " ".join(args)
-    results = addressbook.search(query)
-
-    if not results:
-        return "No results found"
-
-    response = ""
-    for record in results:
-        response += f"{str(record.name).capitalize()}: {record.phone}\n"
-
-    return response
+    search_results = addressbook.search(args[0])
+    if not search_results:
+        return "\nNo results found\n"
+    else:
+        result_string = ""
+        for result in search_results:
+            result_string += result
+        return result_string
 
 
 def save_data(addressbook: AddressBook, *args) -> str:
