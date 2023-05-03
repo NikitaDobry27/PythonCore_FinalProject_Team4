@@ -90,7 +90,7 @@ class _Birthday(_Field):
         day, month, year = map(int, re.split(email_value_pattern, value))
         birthday = date(year, month, day)
         if birthday >= date.today():
-            raise ValueError(f'Birthday must be in the past')
+            raise ValueError(f"Birthday must be in the past")
         self._value = birthday
 
     def __str__(self) -> str:
@@ -110,6 +110,7 @@ class _Record:
             self.phones.append(phone)
         else:
             raise ValueError(f"Phone {phone.value} already exists in {self.name.value} record")
+    
 
     def change_phone(self, old_phone: str, new_phone: str):
         for phone in self.phones:
@@ -117,7 +118,7 @@ class _Record:
                 phone.value = new_phone
                 break
         else:
-            raise KeyError(f'Phone {old_phone} is not found in record')
+            raise KeyError(f"Phone {old_phone} is not found in record")
 
     def del_phone(self, phone: str):
         phone = _Phone(phone)
@@ -168,13 +169,13 @@ class AddressBook(UserDict):
         if name not in self.data:
             self.data[name] = _Record(name)
         else:
-            raise KeyError('Record with this name already exists.')
+            raise KeyError(f"Record with this name already exists.")
 
     def del_record(self, name: str):
         if name in self.data:
             self.data.pop(name)
         else:
-            raise KeyError(f'Record with name {name} does not exist')
+            raise KeyError(f"Record with name {name} does not exist")
 
     def show_records(self):
         for i in self.data.values():
@@ -183,7 +184,7 @@ class AddressBook(UserDict):
     def search(self, query):
         results = ""
         for record in self.data.values():
-            if query.lower() in str(record):
+            if query in str(record):
                 str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
                 str_birthday = record.birthday if record.birthday else "No records"
                 str_email = record.email if record.email else "No records"
