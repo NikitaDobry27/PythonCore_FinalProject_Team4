@@ -167,14 +167,15 @@ def load_data(addressbook: AddressBook, *args) -> str:
 @input_error
 def sort_files(addressbook: AddressBook, *args) -> str:
     message = file_sorter(args[0])
+    return message
 
 
 @input_error
 def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
     birthdays = addressbook.contacts_with_days_to_bday(args[0])
     if len(birthdays) == 0:
-        return f"\nNo contacts will have birthday in {args[0]} days\n"
-    return f'\nThe following contacts will have days in {args[0]} days: \n\n{birthdays}\n'
+        return f"\nNo contacts will have birthday in {args[0]} days"
+    return f'\nThe following contacts will have days in {args[0]} days: \n{birthdays}'
 
 
 function = {'hello': welcome_message,

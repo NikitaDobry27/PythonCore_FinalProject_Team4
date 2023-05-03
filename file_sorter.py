@@ -32,7 +32,7 @@ def file_sorter(path_str: str):
         filename = os.path.split(file)[1]
         dst_file = target_dir.joinpath(filename)
         file.rename(dst_file)
-    return f'files have been sorted'
+    return f'Files have been sorted'
 
 
 if __name__ == '__main__':

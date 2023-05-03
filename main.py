@@ -16,19 +16,28 @@ def command_parser(addressbook: AddressBook, input_string) -> str:
 
 
 def main() -> None:
-    print('\nType "help" for list of commands.\n')
     my_address_book = AddressBook()
-    my_address_book.read_records_from_file('storage1.dat')
+    try:
+        print('\nType "help" for list of commands.\n')
 
-    while True:
-        input_string = input('Enter Command: ')
+        my_address_book.read_records_from_file('storage1.dat')
 
-        if not len(input_string):
-            continue
-        message = command_parser(my_address_book, input_string)
-        print(message)
-        if message == '\nGood bye!\n':
-            break
+        while True:
+            input_string = input('Enter Command: ')
+
+            if not len(input_string):
+                continue
+            message = command_parser(my_address_book, input_string)
+            print(message)
+            if message == '\nGood bye!\n':
+                break
+    except Exception as e:
+        print(f"Unexpected error occurred. {e}")
+
+    finally:
+        my_address_book.save_records_to_file('storage1.dat')
+        print("\nDon't worry. All saved")
+        exit(0)
 
 
 if __name__ == '__main__':

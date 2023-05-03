@@ -110,7 +110,6 @@ class _Record:
             self.phones.append(phone)
         else:
             raise ValueError(f"Phone {phone.value} already exists in {self.name.value} record")
-    
 
     def change_phone(self, old_phone: str, new_phone: str):
         for phone in self.phones:
@@ -178,8 +177,14 @@ class AddressBook(UserDict):
             raise KeyError(f"Record with name {name} does not exist")
 
     def show_records(self):
-        for i in self.data.values():
-            print(str(i))
+        results = ""
+        for record in self.data.values():
+            str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
+            str_birthday = record.birthday if record.birthday else "No records"
+            str_email = record.email if record.email else "No records"
+            formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
+            results += formatted_record
+        print(results)
 
     def search(self, query):
         results = ""
@@ -197,13 +202,17 @@ class AddressBook(UserDict):
 
     def contacts_with_days_to_bday(self, days):
         days = int(days)
-        result = []
+        results = ""
         for record in self.data.values():
             if record.days_to_birthday() is None:
                 continue
             elif record.days_to_birthday() <= days:
-                result.append(str(record))
-        return "\n".join(result)
+                str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
+                str_birthday = record.birthday if record.birthday else "No records"
+                str_email = record.email if record.email else "No records"
+                formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
+                results += formatted_record
+        return results
     
     def save_records_to_file(self, filename):
         data = {"address_book": self.data, "notebook": self.notebook}
