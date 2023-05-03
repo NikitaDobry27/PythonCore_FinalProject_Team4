@@ -169,7 +169,7 @@ class AddressBook(UserDict):
         if name not in self.data:
             self.data[name] = _Record(name)
         else:
-            raise KeyError(f"Record with this name already exists.")
+            raise KeyError("Record with this name already exists.")
 
     def del_record(self, name: str):
         if name in self.data:

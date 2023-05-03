@@ -11,7 +11,7 @@ def input_error(func):
         except ValueError as value_error:
             return f"\n{value_error}\n"
         except KeyError as key_error:
-            return f"\n{key_error}\n"
+            return f"\n{key_error.args[0]}\n"
         except AttributeError as attribute_error:
             return "\nAttribute doesn't exist.\n"
         except NotImplementedError:
