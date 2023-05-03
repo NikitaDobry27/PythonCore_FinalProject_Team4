@@ -90,7 +90,7 @@ class _Birthday(_Field):
         day, month, year = map(int, re.split(email_value_pattern, value))
         birthday = date(year, month, day)
         if birthday >= date.today():
-            raise ValueError(f'Birthday must be in the past')
+            raise ValueError(f"Birthday must be in the past")
         self._value = birthday
 
     def __str__(self) -> str:
@@ -117,7 +117,7 @@ class _Record:
                 phone.value = new_phone
                 break
         else:
-            raise KeyError(f'Phone {old_phone} is not found in record')
+            raise KeyError(f"Phone {old_phone} is not found in record")
 
     def del_phone(self, phone: str):
         phone = _Phone(phone)
@@ -168,22 +168,28 @@ class AddressBook(UserDict):
         if name not in self.data:
             self.data[name] = _Record(name)
         else:
-            raise KeyError('Record with this name already exists.')
+            raise KeyError("Record with this name already exists.")
 
     def del_record(self, name: str):
         if name in self.data:
             self.data.pop(name)
         else:
-            raise KeyError(f'Record with name {name} does not exist')
+            raise KeyError(f"Record with name {name} does not exist")
 
     def show_records(self):
-        for i in self.data.values():
-            print(str(i))
+        results = ""
+        for record in self.data.values():
+            str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
+            str_birthday = record.birthday if record.birthday else "No records"
+            str_email = record.email if record.email else "No records"
+            formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
+            results += formatted_record
+        print(results)
 
     def search(self, query):
         results = ""
         for record in self.data.values():
-            if query.lower() in str(record):
+            if query in str(record):
                 str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
                 str_birthday = record.birthday if record.birthday else "No records"
                 str_email = record.email if record.email else "No records"
@@ -196,13 +202,17 @@ class AddressBook(UserDict):
 
     def contacts_with_days_to_bday(self, days):
         days = int(days)
-        result = []
+        results = ""
         for record in self.data.values():
             if record.days_to_birthday() is None:
                 continue
             elif record.days_to_birthday() <= days:
-                result.append(str(record))
-        return "\n".join(result)
+                str_phones = ', '.join(phone.value for phone in record.phones) if record.phones else "No records"
+                str_birthday = record.birthday if record.birthday else "No records"
+                str_email = record.email if record.email else "No records"
+                formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
+                results += formatted_record
+        return results
     
     def save_records_to_file(self, filename):
         data = {"address_book": self.data, "notebook": self.notebook}
@@ -217,6 +227,13 @@ class AddressBook(UserDict):
                 self.notebook = data["notebook"]
         except FileNotFoundError:
             pass
+
+    def __getitem__(self, key):
+        if key in self.data:
+            return self.data[key]
+        if hasattr(self.__class__, "__missing__"):
+            return self.__class__.__missing__(self, key)
+        raise KeyError(f"No contact with name {key}")
 
 
 if __name__ == '__main__':

@@ -7,20 +7,20 @@ def input_error(func):
         try:
             return func(*args)
         except IndexError as index_error:
-            return index_error
+            return "\nThis function requires an argument.\n"
         except ValueError as value_error:
-            return value_error
+            return f"\n{value_error}\n"
         except KeyError as key_error:
-            return key_error
+            return f"\n{key_error.args[0]}\n"
         except AttributeError as attribute_error:
-            return attribute_error
+            return "\nAttribute doesn't exist.\n"
         except NotImplementedError:
-            return 'This feature is not implemented'
+            return "\nThis feature is not implemented\n"
     return execute
 
 
 def welcome_message(*args) -> str:
-    message = "Hi! How can i help you?"
+    message = "\nHi! How can i help you?\n"
     return message
 
 
@@ -48,7 +48,7 @@ del:
     birthday 'name' 'birthday'           : delete birthday from record.
     note                                 : delete the note from notebook completely.
     tags                                 : delete all tags from the note.
-
+birthdays 'number of days':              : shows contacts who have birthday in specified number of days
 #:                                       : search by a tags (usage: # tag1 tag2...).
     """
     return message
@@ -58,22 +58,22 @@ del:
 def add_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'record':
         addressbook.add_record(args[1])
-        message = f'New record with name {args[1]} added to addressbook.'
+        message = f'\nNew record with name {args[1]} added to addressbook.\n'
     elif args[0] == 'phone':
         addressbook[args[1]].add_phone(args[2])
-        message = f'Phone {args[2]} added to {args[1]} record.'
+        message = f'\nPhone {args[2]} added to {args[1]} record.\n'
     elif args[0] == 'email':
         addressbook[args[1]].set_email(args[2])
-        message = f'Email {args[2]} added to {args[1]} record.'
+        message = f'\nEmail {args[2]} added to {args[1]} record.\n'
     elif args[0] == 'birthday':
         addressbook[args[1]].set_birthday(args[2])
-        message = f'Birthday {args[2]} added to {args[1]} record.'
+        message = f'\nBirthday {args[2]} added to {args[1]} record.\n'
     elif args[0] == 'note':
         message = addressbook.notebook.create_note()
     elif args[0] == 'tags':
         message = addressbook.notebook.set_tags()
     else:
-        message = f'add does not support {args[0]} command.'
+        message = f'\nadd does not support {args[0]} command.\n'
     return message
 
 
@@ -81,13 +81,13 @@ def add_handler(addressbook: AddressBook, *args) -> str:
 def change_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'phone':
         addressbook[args[1]].change_phone(args[2], args[3])
-        message = f'Phone in record {args[1]} was changed from {args[2]} to {args[3]} record.'
+        message = f'\nPhone in record {args[1]} was changed from {args[2]} to {args[3]} record.\n'
     elif args[0] == 'email':
         addressbook[args[1]].set_email(args[2])
-        message = f'Email in record {args[1]} was changed'
+        message = f'\nEmail in record {args[1]} was changed\n'
     elif args[0] == 'birthday':
         addressbook[args[1]].set_birthday(args[2])
-        message = f'Email in record {args[1]} was changed'
+        message = f'\nEmail in record {args[1]} was changed\n'
     elif args[0] == 'note' and len(args) == 1:
         message = addressbook.notebook.change_note()
     elif args[0] == 'note' and args[1] == 'title':
@@ -95,7 +95,7 @@ def change_handler(addressbook: AddressBook, *args) -> str:
     elif args[0] == 'tags':
         message = addressbook.notebook.change_tags()
     else:
-        message = f'change does not support {" ".join(args)} command.'
+        message = f'\nchange does not support {" ".join(args)} command.\n'
     return message
 
 
@@ -103,22 +103,22 @@ def change_handler(addressbook: AddressBook, *args) -> str:
 def del_handler(addressbook: AddressBook, *args) -> str:
     if args[0] == 'record':
         addressbook.del_record(args[1])
-        message = f'Record with name {args[1]} was deleted from addressbook.'
+        message = f'\nRecord with name {args[1]} was deleted from addressbook.\n'
     elif args[0] == 'phone':
         addressbook[args[1]].del_phone(args[2])
-        message = f'Phone {args[2]} was deleted from {args[1]} record.'
+        message = f'\nPhone {args[2]} was deleted from {args[1]} record.\n'
     elif args[0] == 'email':
         addressbook[args[1]].del_email()
-        message = f'Email was deleted from {args[1]} record.'
+        message = f'\nEmail was deleted from {args[1]} record.\n'
     elif args[0] == 'birthday':
-        addressbook[args[1]].del_email()
-        message = f'Birthday was deleted from {args[1]} record.'
+        addressbook[args[1]].del_birthday()
+        message = f'\nBirthday was deleted from {args[1]} record.\n'
     elif args[0] == 'note':
         message = addressbook.notebook.del_note()
     elif args[0] == 'tags':
         message = addressbook.notebook.del_tags()
     else:
-        message = f'del does not support {args[0]} command.'
+        message = f'\ndel does not support {args[0]} command.\n'
     return message
 
 
@@ -126,14 +126,14 @@ def del_handler(addressbook: AddressBook, *args) -> str:
 def show_handler(addressbook: AddressBook, *args) -> str:
     if len(args) < 1:
         addressbook.show_records()
-        return 'All records are shown.'
+        return '\nAll records are shown.\n'
     elif len(args) == 1 and args[0] == 'notes':
         mes = addressbook.notebook.show_notes()
         if not mes:
-            return "There's no notes yet."
+            return "\nThere's no notes yet.\n"
         return mes
 
-    return "Something went wrong."
+    return "\nSomething went wrong.\n"
 
 
 @input_error
@@ -141,43 +141,41 @@ def search_handler(addressbook: AddressBook, *args):
     query = " ".join(args)
     results = addressbook.search(query)
     if not results:
-        return "Nothing was found."
+        return "\nNothing was found.\n"
     return results
 
 
 def find_tag(addressbook: AddressBook, *args):
     result = addressbook.notebook.find_tag(args)
     if not result:
-        return "No such tag(s)"
-    print(f"{len(result)} note(s) was found with {' '.join('#'+tag for tag in args)}")
+        return "\nNo such tag(s)\n"
+    print(f"\n{len(result)} note(s) was found with {' '.join('#'+tag for tag in args)}\n")
     response = "".join(str(note) for note in result)
     return response
 
 
 def save_data(addressbook: AddressBook, *args) -> str:
     addressbook.save_records_to_file('storage1.dat')
-    return "Records have been saved."
+    return "\nRecords have been saved.\n"
 
 
 def load_data(addressbook: AddressBook, *args) -> str:
     addressbook.read_records_from_file('storage1.dat')
-    return "Records have been loaded."
+    return "\nRecords have been loaded.\n"
 
 
 @input_error
 def sort_files(addressbook: AddressBook, *args) -> str:
     message = file_sorter(args[0])
+    return message
 
 
-def notes(addressbook: AddressBook, *args):
-    raise NotImplementedError
-
-
+@input_error
 def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
     birthdays = addressbook.contacts_with_days_to_bday(args[0])
     if len(birthdays) == 0:
-        return f"No contacts will have birthday in {args[0]} days"
-    return f'The following contacts will have days in {args[0]} days: \n{birthdays}'
+        return f"\nNo contacts will have birthday in {args[0]} days"
+    return f'\nThe following contacts will have days in {args[0]} days: \n{birthdays}'
 
 
 function = {'hello': welcome_message,
