@@ -18,6 +18,7 @@ def command_parser(addressbook: AddressBook, input_string) -> str:
 def main() -> None:
     print('Type "help" for list of commands.')
     my_address_book = AddressBook()
+    my_address_book.read_records_from_file('storage1.dat')
 
     while True:
         input_string = input('Enter Command: ')
