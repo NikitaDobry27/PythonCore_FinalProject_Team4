@@ -169,9 +169,6 @@ def sort_files(addressbook: AddressBook, *args) -> str:
     message = file_sorter(args[0])
 
 
-def notes(addressbook: AddressBook, *args):
-    raise NotImplementedError
-
 @input_error
 def list_contacts_with_days_to_birthday(addressbook: AddressBook, *args):
     birthdays = addressbook.contacts_with_days_to_bday(args[0])
