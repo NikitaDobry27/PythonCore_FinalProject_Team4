@@ -1,5 +1,4 @@
-# PythonCore_FinalProject_Team4
-# **Address Book Bot**
+# Python CLI Bot addressbook
 
 Address Book Bot is a command-line application that helps you manage your contacts, notes, and birthdays. You can add, modify, and delete records, as well as search for contacts, notes, or tags. The bot also allows you to save and load records from a file, sort files, and find contacts with upcoming birthdays.
 
