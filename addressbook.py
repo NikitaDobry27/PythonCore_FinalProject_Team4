@@ -219,6 +219,13 @@ class AddressBook(UserDict):
         except FileNotFoundError:
             pass
 
+    def __getitem__(self, key):
+        if key in self.data:
+            return self.data[key]
+        if hasattr(self.__class__, "__missing__"):
+            return self.__class__.__missing__(self, key)
+        raise KeyError(f"No contact with name {key}")
+
 
 if __name__ == '__main__':
     # Примеры работы с адресной книгой
