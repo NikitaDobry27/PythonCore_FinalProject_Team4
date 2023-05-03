@@ -1,5 +1,4 @@
-from addressbook import AddressBook
-from file_sorter import file_sorter
+from python_bot import AddressBook, file_sorter
 
 
 def input_error(func):
@@ -155,12 +154,12 @@ def find_tag(addressbook: AddressBook, *args):
 
 
 def save_data(addressbook: AddressBook, *args) -> str:
-    addressbook.save_records_to_file('storage1.dat')
+    addressbook.save_records_to_file('../storage1.dat')
     return "\nRecords have been saved.\n"
 
 
 def load_data(addressbook: AddressBook, *args) -> str:
-    addressbook.read_records_from_file('storage1.dat')
+    addressbook.read_records_from_file('../storage1.dat')
     return "\nRecords have been loaded.\n"
 
 
