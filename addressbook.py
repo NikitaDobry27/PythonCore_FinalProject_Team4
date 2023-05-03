@@ -208,14 +208,16 @@ class AddressBook(UserDict):
         return "\n".join(result)
     
     def save_records_to_file(self, filename):
-        with open(filename, "wb") as fw:
-            pickle.dump(self.data, fw)
+        data = {"address_book": self.data, "notebook": self.notebook}
+        with open(filename, "wb") as f:
+            pickle.dump(data, f)
 
     def read_records_from_file(self, filename):
         try:
-            with open(filename, "rb") as fr:
-                content = pickle.load(fr)
-                self.data.update(content)
+            with open(filename, "rb") as f:
+                data = pickle.load(f)
+                self.data = data["address_book"]
+                self.notebook = data["notebook"]
         except FileNotFoundError:
             pass
 
@@ -223,15 +225,21 @@ class AddressBook(UserDict):
 if __name__ == '__main__':
     # Примеры работы с адресной книгой
     addressbook = AddressBook()
+    addressbook.read_records_from_file('storage1.dat')
     addressbook.add_record("Alexander")                         # Создаем контакт
     addressbook["Alexander"].add_phone('111111111')             # Добавляем к контакту 1 номер
     addressbook["Alexander"].add_phone('111111112')             # Добавляем к контакту 2 номер
     addressbook["Alexander"].add_phone('111111113')             # Добавляем к контакту 3 номер
     addressbook["Alexander"].set_birthday('30-09-2022')         # Добавляем к контакту день рождения
     addressbook["Alexander"].set_email('abcdef@gmail.com')      # Добавляем к контакту емеил
+    # # сохраняет адресную книгу
+    # addressbook.save_records_to_file('storage1.dat')
+    # # загружает адресную книгу
+    # addressbook.read_records_from_file('storage1.dat')
     # удалять день рождения и емеил пока что нельзя, только переназначать
     addressbook["Alexander"].del_phone('111111112')             # Удаляем номер
     # изменение номера телефона делается путем удаления старого номера и добавления нового
     addressbook.show_records()                                  # заглушка, нужно сделать через генератор
     addressbook.del_record("Alexander")                         # Удаляем запись
     addressbook.show_records()
+
