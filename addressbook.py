@@ -195,16 +195,13 @@ class AddressBook(UserDict):
         return results
 
     def contacts_with_days_to_bday(self, days):
+        days = int(days)
         result = []
-        for record in self.values():
-            bd = datetime.strptime(record.bday, "%d %B %Y")
-            today = date.today()
-            current_year_birthday = date(today.year, bd.month, bd.day)
-            if current_year_birthday < today:
-                current_year_birthday = date(today.year + 1, bd.month, bd.day)
-            delta = current_year_birthday - today
-            if delta.days == int(days):
-                result.append(f"{record.name}, {record.bday}")
+        for record in self.data.values():
+            if record.days_to_birthday() is None:
+                continue
+            elif record.days_to_birthday() <= days:
+                result.append(str(record))
         return "\n".join(result)
     
     def save_records_to_file(self, filename):
