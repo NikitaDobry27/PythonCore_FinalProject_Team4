@@ -41,7 +41,7 @@ Address Book Bot is a command-line application that helps you manage your contac
 To install the Address Book Bot, run the following command:
 
 ```bash
-pip install -e .
+pip install git+https://github.com/NightSpring1/PythonCore_FinalProject_Team4
 ```
 
 This will install the bot and its dependencies.
