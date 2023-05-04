@@ -164,7 +164,7 @@ def load_data(addressbook: AddressBook, *args) -> str:
 
 
 @input_error
-def sort_files(addressbook: AddressBook, *args) -> str:
+def sort_files_handler(addressbook: AddressBook, *args) -> str:
     message = sort_files(args[0])
     return message
 
@@ -186,6 +186,6 @@ function = {'hello': welcome_message,
             'search': search_handler,
             'save': save_data,
             'load': load_data,
-            'sort_files': sort_files,
+            'sort_files': sort_files_handler,
             'birthdays': list_contacts_with_days_to_birthday,
             '#': find_tag}
