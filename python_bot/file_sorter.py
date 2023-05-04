@@ -18,7 +18,7 @@ def get_categories(file: Path):
     return None
 
 
-def file_sorter(path_str: str):
+def sort_files(path_str: str):
     path = Path(path_str)
     if not path.exists():
         raise ValueError("Folder does not exist")
@@ -37,4 +37,4 @@ def file_sorter(path_str: str):
 
 if __name__ == '__main__':
     path1 = 'C:\\Users\\Surface\\Downloads'
-    print(file_sorter(path1))
+    print(sort_files(path1))

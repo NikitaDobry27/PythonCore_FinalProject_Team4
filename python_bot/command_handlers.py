@@ -1,4 +1,4 @@
-from python_bot import AddressBook, file_sorter
+from python_bot import AddressBook, sort_files
 
 
 def input_error(func):
@@ -165,7 +165,7 @@ def load_data(addressbook: AddressBook, *args) -> str:
 
 @input_error
 def sort_files(addressbook: AddressBook, *args) -> str:
-    message = file_sorter(args[0])
+    message = sort_files(args[0])
     return message
 
 
