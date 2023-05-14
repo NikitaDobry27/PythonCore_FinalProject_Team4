@@ -36,24 +36,4 @@ Address Book Bot is a command-line application that helps you manage your contac
 - **`birthdays 'number of days'`**: Shows contacts who have a birthday in the specified number of days.
 - **`# tag1 tag2...`**: Search by tags.
 
-## **Setup**
-
-To install the Address Book Bot, run the following command:
-
-```bash
-pip install git+https://github.com/NightSpring1/PythonCore_FinalProject_Team4
-```
-
-This will install the bot and its dependencies.
-
-## **Usage**
-
-To start the bot, run the following command:
-
-```bash
-bot-start
-```
-
-This will launch the command-line interface for the Address Book Bot. Enter your commands according to the usage instructions provided above.
-
 For any issues or questions, please refer to the **[GitHub repository](https://github.com/NightSpring1/PythonCore_FinalProject_Team4)**.
