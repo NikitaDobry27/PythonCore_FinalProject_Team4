@@ -1,25 +1,11 @@
 import re
 import pickle
-from abc import ABC, abstractmethod
 from datetime import date
 from collections import UserDict
-from python_bot import NoteBook
+from python_bot import NoteBook, UserInterface, _Field, BaseRecordStorage
 
 
-class _Field(ABC):
-    def __init__(self, value):
-        self._value = None
-        self.value = value
 
-    @property
-    @abstractmethod
-    def value(self):
-        raise NotImplementedError
-
-    @value.setter
-    @abstractmethod
-    def value(self, value):
-        raise NotImplementedError
 
 
 class _Name(_Field):
@@ -159,10 +145,24 @@ class _Record:
         str_birthday = str(self.birthday) if self.birthday else str()
         return '|'.join((self.name.value, str_email, str_phones, str_birthday))
 
+class FileHandler:
+    @staticmethod
+    def save_to_file(filename, address_book):
+        with open(filename, "wb") as f:
+            pickle.dump(address_book, f)
 
-class AddressBook(UserDict):
+    @staticmethod
+    def load_from_file(filename):
+        try:
+            with open(filename, "rb") as f:
+                return pickle.load(f)
+        except FileNotFoundError:
+            print("File not found.")
+            return None
 
-    notebook = NoteBook()
+class AddressBook(BaseRecordStorage, UserDict):
+   
+    notebook = UserInterface(NoteBook())
 
     def add_record(self, name: str):
         if name not in self.data:
@@ -195,7 +195,7 @@ class AddressBook(UserDict):
                 str_email = record.email if record.email else "No records"
                 formatted_record = f"\n Name: {record.name.value}\n Phones: {str_phones}\n Birthday: {str_birthday}\n Email: {str_email}\n"
                 results += formatted_record
-        founded_notes = self.notebook.search_note(query)
+        founded_notes = self.notebook.search(query)
         formatted_notes = [str(note) for note in founded_notes]
         results += "".join(formatted_notes)
         return results
@@ -214,19 +214,15 @@ class AddressBook(UserDict):
                 results += formatted_record
         return results
     
-    def save_records_to_file(self, filename):
+    def save_records(self, filename):
         data = {"address_book": self.data, "notebook": self.notebook}
-        with open(filename, "wb") as f:
-            pickle.dump(data, f)
+        FileHandler.save_to_file(filename, data)
 
-    def read_records_from_file(self, filename):
-        try:
-            with open(filename, "rb") as f:
-                data = pickle.load(f)
-                self.data = data["address_book"]
-                self.notebook = data["notebook"]
-        except FileNotFoundError:
-            pass
+    def load_records(self, filename):
+        loaded_data = FileHandler.load_from_file(filename)
+        if loaded_data is not None:
+            self.data = loaded_data["address_book"]
+            self.notebook = loaded_data["notebook"]
 
     def __getitem__(self, key):
         if key in self.data:

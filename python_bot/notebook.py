@@ -1,6 +1,7 @@
 import re
 import datetime
 from collections import UserDict
+from python_bot import BaseRecordStorage
 
 
 class _HashTag:
@@ -30,7 +31,42 @@ class _Note:
         return "\n".join(res)
 
 
-class NoteBook(UserDict):
+class NoteBook(BaseRecordStorage, UserDict):
+    
+    def add_record(self, note: _Note):
+        self.data[note.note_title] = note
+
+    def del_record(self,  note_title):
+        if note_title is None:
+            return "\nSuccessfully exited\n"
+        self.data.pop(note_title)
+        return f"\nNote '{note_title}' was successfully deleted.\n"
+
+    def show_records(self):
+        res = ""
+        for note in self.data.values():
+            res += f"{note}\n"
+        return res
+
+    def search(self, query):
+        results = []
+        for note in self.data.values():
+            if re.search(query, note.note_title, re.IGNORECASE) or re.search(
+                query, note.note_text, re.IGNORECASE
+            ):
+                results.append(note)
+        return results
+
+    
+
+    def __str__(self):
+        return "\n".join(str(n) for n in self.data.values())
+
+
+class UserInterface:
+    def __init__(self, notebook: NoteBook):
+        self.notebook = notebook
+
     def create_note(self):
         note_title = input("Enter note title: ")
         # Если заметка с таким же заголовком уже существует, то к названию плюсуеться текущее дата и время
@@ -41,12 +77,9 @@ class NoteBook(UserDict):
         tags_list = tags_str.split()
         tags = [_HashTag(tag.strip()) for tag in tags_list]
         new_note = _Note(note_title, note_content, tags)
-        self.add_note(new_note)
+        self.add_record(new_note)
         message = f"\nNote '{note_title}' created successfully!\n"
         return message
-
-    def add_note(self, note: _Note):
-        self.data[note.note_title] = note
 
     def ask_note(self):
         print("\nChoose the note you want to work with.\n")
@@ -69,7 +102,7 @@ class NoteBook(UserDict):
                 print("\nPlease enter a valid integer index.\n")
                 continue
             return titles[title_pos]
-
+        
     def change_note(self):
         note_title = self.ask_note()
         if note_title is None:
@@ -81,29 +114,6 @@ class NoteBook(UserDict):
         self.data[note_title].note_text = ch_note
         return f"\nNote '{note_title}' has been changed.\n"
 
-    def del_note(self):
-        note_title = self.ask_note()
-        if note_title is None:
-            return "\nSuccessfully exited\n"
-        self.data.pop(note_title)
-        return f"\nNote '{note_title}' was successfully deleted.\n"
-
-    def show_notes(self):
-        res = ""
-        for note in self.data.values():
-            res += f"{note}\n"
-        return res
-
-    # Поиск
-    def search_note(self, query):
-        results = []
-        for note in self.data.values():
-            if re.search(query, note.note_title, re.IGNORECASE) or re.search(
-                query, note.note_text, re.IGNORECASE
-            ):
-                results.append(note)
-        return results
-
     def find_tag(self, search_val):
         result = set()
         for note in self.data.values():
@@ -113,8 +123,7 @@ class NoteBook(UserDict):
                     result.add(note)
         return list(result)
 
-    def change_title(self):
-        old_title = self.ask_note()
+    def change_title(self, old_title, new_title):
         if old_title is None:
             return "\nSuccessfully exited\n"
         new_title = input("Provide new title for the note\n>>> ")
@@ -123,10 +132,8 @@ class NoteBook(UserDict):
             self.data[new_title].note_title = new_title
         return f"\nOld title name {old_title} was change on - {new_title}\n"
 
-    def _get_tags(self):
+    def _get_tags(self, note_title):
         if self.data.values():
-            note_title = self.ask_note()
-            # print(note_title)
             if note_title is None:
                 return None
             tags = self.data[note_title].tags
@@ -164,24 +171,20 @@ class NoteBook(UserDict):
         else:
             return "\nNo notes to set tags for.\n"
 
-    def del_tags(self):
+    def del_tags(self, note_title):
         if self.data.values():
-            note_title = self.ask_note()
             if note_title is None:
                 return "\nSuccessfully exited\n"
             self.data[note_title].tags = []
             return "\nTags deleted successfully.\n"
         else:
             return "\nNo notes to set tags for.\n"
-
-    def __str__(self):
-        return "\n".join(str(n) for n in self.data.values())
-
-
-notebook = NoteBook()
+        
+nb = NoteBook()
+notebook = UserInterface(nb)
 
 if __name__ == "__main__":
     notebook.create_note()
     notebook.create_note()
-    notebook.show_notes()
-    # notebook.search_note()
+    notebook.show_records()
+    # notebook.search()

@@ -113,7 +113,7 @@ def del_handler(addressbook: AddressBook, *args) -> str:
         addressbook[args[1]].del_birthday()
         message = f'\nBirthday was deleted from {args[1]} record.\n'
     elif args[0] == 'note':
-        message = addressbook.notebook.del_note()
+        message = addressbook.notebook.del_record()
     elif args[0] == 'tags':
         message = addressbook.notebook.del_tags()
     else:
@@ -127,7 +127,7 @@ def show_handler(addressbook: AddressBook, *args) -> str:
         addressbook.show_records()
         return '\nAll records are shown.\n'
     elif len(args) == 1 and args[0] == 'notes':
-        mes = addressbook.notebook.show_notes()
+        mes = addressbook.notebook.show_records()
         if not mes:
             return "\nThere's no notes yet.\n"
         return mes
